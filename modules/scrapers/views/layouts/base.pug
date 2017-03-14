@@ -1,0 +1,17 @@
+extends ../../../../views/layouts/base.pug
+
+include ../../../../views/mixins/navs/sidebar.pug
+include ../../../../views/mixins/navs/dashhead.pug
+
+append body
+  div.container
+    div.row
+      div.col-sm-3
+        +sidebar('scrapers')
+      div.col-sm-9
+        +dashhead('Scrapers', 'Tools', true)
+        block content
+
+append scripts
+  //script(src="/socket.io/socket.io.js")
+  script(src="/js/scrapers.min.js")

@@ -1,0 +1,25 @@
+mixin item(title, path, scope, location)
+  if !scope || user.scope.indexOf(scope) !== -1
+    li(class=(location === title.toLowerCase() ? 'active' : ''))
+      a(href=path)= title
+
+mixin sidebar(location, scope)
+  div.sidebar
+    nav.sidebar-nav
+      div.sidebar-header
+        button(type="button" data-toggle="collapse" data-target="#nav-toggleable-sm").nav-toggler.nav-toggler-sm.sidebar-toggler
+          span.sr-only Toggle nav
+        a(href="/").sidebar-brand.img-responsive
+          span.icon.icon-globe.sidebar-brand-icon
+          span Geolink
+      div#nav-toggleable-sm.collapse.nav-toggleable-sm
+        ul.nav.nav-pills.nav-stacked
+          li.nav-header Dashboards
+          //+item('Overview', '/dashboards', false, location)
+          //+item('Map', '/dashboards/map', false, location)
+          li.nav-header Tools
+          +item('Scrapers', '/scrapers', false, location)
+          //+item('Admin', '/admin', 'admin', location)
+          li.nav-header Misc
+          //+item('Logout', '/auth/logout', false, location)
+        hr.visible-xs

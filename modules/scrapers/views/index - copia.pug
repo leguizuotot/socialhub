@@ -1,0 +1,34 @@
+extends ./layouts/base.pug
+
+include ./mixins/divider.pug
+include ./mixins/card.pug
+
+append head
+  title Scrapers
+
+append content
+  div.row
+    div.col-sm-12
+      +divider('Twitter', 'twitter', false)
+      +card('twitter', 'twitter', twitter)
+    div.col-sm-12
+      +divider('Facebook', 'facebook', false)
+      +card('facebook', 'facebook', facebook)
+    div.col-sm-12
+      +divider('Foursquare', 'foursquare', false)
+      +card('foursquare', 'foursquare', foursquare)
+    div.col-sm-12
+      +divider('Yelp', 'yelp', false)
+      +card('yelp', 'yelp', yelp)
+    div.col-sm-12
+      +divider('Tripadvisor', 'tripadvisor', false)
+      +card('tripadvisor', 'tripadvisor', tripadvisor)
+    div.col-sm-12
+      +divider('Michelin', 'star', false)
+      +card('michelin', 'star', michelin)
+    div.col-sm-12
+      +divider('Repsol', 'circle', false)
+      +card('repsol', 'circle', repsol)
+    div.col-sm-12
+      +divider('Minube', 'cloud', false)
+      +card('minube', 'cloud', minube)
