@@ -1,0 +1,32 @@
+{
+  "name": "scrapers",
+  "version": "1.0.0",
+  "description": "description",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/____"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./bin/www"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "child_process": "^1.0.2",
+    "express": "^4.15.2",
+    "flat": "^2.0.1",
+    "fs": "0.0.1-security",
+    "generic-pool": "^3.1.7",
+    "lodash": "^4.17.4",
+    "morgan": "^1.8.1",
+    "mssql": "^3.3.0",
+    "node-fetch": "^1.6.3",
+    "node-stringify": "0.0.19",
+    "path": "^0.12.7",
+    "query": "^0.2.0",
+    "x-ray": "^2.3.2"
+  }
+}
