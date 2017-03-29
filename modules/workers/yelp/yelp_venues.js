@@ -12,11 +12,13 @@ const model = require('./model_venues.js');
 const origin = 'yelp';
 const list = 'venues';
 const size = 5;
+
+//Configuracion datos Miguel Serrano ¡¡Cambiar!!
 const apiConfig = {
-  consumer_key: process.env.YELP_CONSUMER_KEY,
-  consumer_secret: process.env.YELP_CONSUMER_SECRET,
-  token: process.env.YELP_TOKEN,
-  token_secret: process.env.YELP_TOKEN_SECRET,
+  consumer_key: 'DiSRJq74v8D4L55bMP8aMQ',
+  consumer_secret: '9G6Ls5gBJS0S2BxQKs4zkXGmbAw',
+  token: 'l-0pBCew6LIBfn2gqHkMw3IRmf9JlVDh',
+  token_secret: 'Mm-jG0W6buu945arueiytAJ6xD0',
 };
 
 // Set up input data

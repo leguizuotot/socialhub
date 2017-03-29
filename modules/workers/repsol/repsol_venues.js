@@ -27,7 +27,10 @@ var dbConfig = require('../../../settings.js').dbConfigMsSQL
 database.connect(dbConfig)
 .then(() => database.query`
   SELECT *
-  FROM ibc_seg.DM_SOURCE_REPSOL_LIST_RAW`)
+  FROM (SELECT *,
+    (SELECT max([datetime])FROM ibc_seg.DM_SOURCE_REPSOL_LIST_RAW) AS MAXIMO
+    FROM ibc_seg.DM_SOURCE_REPSOL_LIST_RAW) AS LIST
+    WHERE  DATEDIFF(day, [datetime],MAXIMO) < 8`)
 .then((rows) => {
   const input = rows
     .map((item) => Object.assign({}, item, {

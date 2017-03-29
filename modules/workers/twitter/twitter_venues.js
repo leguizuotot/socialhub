@@ -43,12 +43,14 @@ Twitter.prototype.getUsers = function getUsers(params, error, success) {
 const origin = 'twitter';
 const list = 'venues';
 const size = 100;
+
+// Configuracion Miguel Serrano ¡¡Cambiar!!
 const apiConfig = {
-  consumerKey: process.env.TWITTER_CONSUMER_KEY,
-  consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
-  accessToken: process.env.TWITTER_ACCESS_TOKEN,
-  accessTokenSecret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
-  callBackUrl: process.env.TWITTER_CALLBACK_URL,
+  consumerKey: 'IZbAlPTh7GwmnDXvKQP6pu76q',
+  consumerSecret: 'dERq0ZVBsVrhwpv1ehMt86ya9rGx5sWgeWDfBWrUKUzS4c1aNz',
+  accessToken: '215681150-rkuRHUTNFhe4u7oweqGOtJ63ptsz3nzcSa8VitFk',
+  accessTokenSecret: 'HzNH8uQ6VzCJCsv7oI2KXtLtp1Mulc4ytjnR3eAWBastJ',
+  callBackUrl: '',
 };
 
 // Set up input data

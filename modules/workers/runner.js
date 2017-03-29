@@ -111,6 +111,7 @@ function makeGenerator({
         const response = yield handleGet(item);
         if (response.source) throw response;
 
+
         let results = yield handleResponse(item, response, done);
         if (results.source) throw results;
         if (results.pages) {
@@ -138,6 +139,7 @@ function makeGenerator({
           });
         }
       } catch (error) {
+
         if (true) {
           console.log(' -> ERROR');
           console.log(error);
@@ -216,6 +218,7 @@ function runner({
     .then(() => {
       const table = prepareTable(tableName, database, Object.keys(flatten(model)));
       return new database.Request().bulk(table);
+
     })
 
     // get progress

@@ -15,7 +15,7 @@ const size = 215;
 // Set up input data
 
 const input = [{
-  url: 'http://www.guiarepsol.com/es/gastronomia/restaurantes/',
+  url: 'https://www.guiarepsol.com/es/gastronomia/restaurantes/',
   name: 'Pages',
   cluster: 1,
   section: null,
@@ -35,7 +35,7 @@ function handleGet({ url }) {
         const urls = [];
         const pages = parseInt(arr[arr.length - 2], 10);
         for (let i = 1; i <= pages; i++) {
-          urls.push(`http://www.guiarepsol.com/es/gastronomia/restaurantes?page=${i}`);
+          urls.push(`https://www.guiarepsol.com/es/la-guia/todos-los-restaurantes/?view_mode=list&page=${i}`);
         }
         resolve(urls);
       }

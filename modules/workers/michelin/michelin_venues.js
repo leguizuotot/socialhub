@@ -30,6 +30,7 @@ database.connect(dbConfig)
 .then(() => database.query`
   SELECT *
   FROM ibc_seg.DM_SOURCE_MICHELIN_LIST_RAW
+  WHERE [datetime] = (SELECT max([datetime])FROM ibc_seg.DM_SOURCE_MICHELIN_LIST_RAW)
   ORDER BY CAST(cluster AS INT)`)
 .then((rows) => {
   const input = rows

@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./bin/www"
+    "start": "nodemon ./bin/www"
   },
   "author": "",
   "license": "ISC",
@@ -27,6 +27,8 @@
     "node-stringify": "0.0.19",
     "path": "^0.12.7",
     "query": "^0.2.0",
-    "x-ray": "^2.3.2"
+    "twitter-node-client": "0.0.6",
+    "x-ray": "^2.3.2",
+    "yelp": "^1.0.2"
   }
 }
