@@ -20,21 +20,21 @@ module.exports.runAranya = function(req,res) {
   }
 
   model.getStatus(nombreAranya, function(err, data) {
+    console.log('Run ' + nombreAranya + '-' + list + ' request');
+
     if (data[0].STATUS === 'Stopped') {
       resumen.accion = 'La aranya estaba parada. Se ha lanzado la aranya'
-
       model.setStatus(nombreAranya, 'Running', function(err, data) {
-        console.log('Status cambiado');
+        // console.log('Status cambiado');
         res.end();
       })
 
       worker = fork(path.join(__dirname, '../../workers/'+nombreAranya+'/'+nombreAranya+'_'+list+'.js'))
 
 
-
       worker.on('exit', (code, signal) => {
         model.setStatus(nombreAranya, 'Stopped', function(err, data) {
-          console.log('Status cambiado');
+          // console.log('Status cambiado');
           res.end();
         });
         if (signal) {
@@ -48,17 +48,43 @@ module.exports.runAranya = function(req,res) {
 
       worker.on('disconnect', () => {
         model.setStatus(nombreAranya, 'Stopped', function(err, data) {
-          console.log('Status cambiado');
+          // console.log('Status cambiado');
           res.end();
         });
         // console.log(`${origin}_${list} worker exited`);
         console.log('worker exited');
       });
+
+
+      worker.on('message', (m) => {
+          switch (m.type) {
+            case 'progress': {
+              const progress = m.data +'%';
+              // worker.progress = progress;
+              // io.sockets.emit('progress', { origin, list, progress });
+              model.setProgress(nombreAranya, progress, function(err, data) {
+                // console.log('Status cambiado');
+                res.end();
+              });
+              break;
+            }
+            case 'stop': {
+              if (worker && worker.kill) {
+                worker.kill();
+              }
+              break;
+            }
+            default: {
+              break;
+            }
+          }
+      });
+
     } else {
       console.log(nombreAranya + ' already running');
       resumen.accion = 'La aranya ya se esta ejecutando'
       model.setStatus(nombreAranya, 'Stopped', function(err, data) {
-        console.log('Status cambiado');
+        // console.log('Status cambiado');
         res.end();
       })
     }

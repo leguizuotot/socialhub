@@ -52,6 +52,7 @@ database.connect(dbConfig)
 
   // Set up handlers
 
+
   function handleGet({ offset, latlon, section }) {
     const yelp = new Yelp(apiConfig);
     return yelp.search({
@@ -66,6 +67,7 @@ database.connect(dbConfig)
       if (error.statusCode === 400) return error;
       return { error, source: 'handleGet' };
     });
+
   }
 
   function handleResponse(item, response, done) {

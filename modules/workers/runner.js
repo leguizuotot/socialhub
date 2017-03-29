@@ -59,26 +59,10 @@ function handleSave(table, data) {
     }));
 }
 
-function makeGenerator({
-  config,
-  data,
-  handlers
-}) {
-  const {
-    origin,
-    list,
-    size
-  } = config;
-  const {
-    input,
-    model,
-    todo,
-    done
-  } = data;
-  const {
-    handleGet,
-    handleResponse
-  } = handlers;
+function makeGenerator({config,data,handlers}) {
+  const {origin,list,size} = config;
+  const {input,model,todo,done} = data;
+  const {handleGet,handleResponse} = handlers;
 
   const tableName = `ibc_seg.DM_SOURCE_${origin.toUpperCase()}_${list.toUpperCase()}_RAW`;
   const maxRetries = 3;
@@ -111,7 +95,6 @@ function makeGenerator({
         const response = yield handleGet(item);
         if (response.source) throw response;
 
-
         let results = yield handleResponse(item, response, done);
         if (results.source) throw results;
         if (results.pages) {
@@ -125,9 +108,9 @@ function makeGenerator({
 
         done.push(...inserted);
         retries = 0;
-        message = 'Getting ' + origin + '-' + list;
-        const newProgress = Math.floor(((done.length / input.length) * 100) / size);
 
+        const newProgress = Math.floor(((done.length / input.length) * 100) / size);
+        message = 'Getting ' + origin + '-' + list + ' | Progress: ' + newProgress + '%';
         if (true) console.log(` -> results: ${results.length} -> OK`);
         if (newProgress > progress) {
           progress = newProgress;
@@ -156,7 +139,7 @@ function makeGenerator({
             list
           });
           if (true) console.log('Reached maximum number of retry attempts.');
-          break;
+          // break;
         }
       }
     }
@@ -171,45 +154,25 @@ function makeGenerator({
   };
 }
 
-function run({
-  config,
-  data,
-  handlers
-}) {
-  const gen = makeGenerator({
-    config,
-    data,
-    handlers
-  });
+function run({config,data,handlers}) {
+  const gen = makeGenerator({config, data,handlers});
   const it = gen();
 
   (function pull(val) {
     const ret = it.next(val);
     if (!ret.done) {
-      Promise
-        .resolve(ret.value)
-        .then(pull)
-        .catch(error => pull({
-          error,
-          source: 'run'
-        }));
+      Promise.resolve(ret.value).then(pull).catch(error => pull({
+        error,
+        source: 'run'
+      }));
     }
   }());
+
 }
 
-function runner({
-  config,
-  data,
-  handlers
-}) {
-  const {
-    origin,
-    list
-  } = config;
-  const {
-    input,
-    model
-  } = data;
+function runner({config,data,handlers}) {
+  const {origin,list} = config;
+  const {input,model} = data;
   const tableName = `ibc_seg.DM_SOURCE_${origin.toUpperCase()}_${list.toUpperCase()}_RAW`;
 
   connection
@@ -218,14 +181,10 @@ function runner({
     .then(() => {
       const table = prepareTable(tableName, database, Object.keys(flatten(model)));
       return new database.Request().bulk(table);
-
     })
-
     // get progress
     .then(() => {
-
       const datetime = new Date().toISOString();
-
       const pClusters = new database.Request()
         .query(`
         SELECT DISTINCT [cluster]
@@ -249,13 +208,8 @@ function runner({
       data.done = idsDone;
       data.todo = clustersTodo;
 
-      run({
-        config,
-        data,
-        handlers
-      });
-    })
-    .catch(error => console.log({
+      run({config,data,handlers});
+    }).catch(error => console.log({
       error,
       source: 'runner'
     }));

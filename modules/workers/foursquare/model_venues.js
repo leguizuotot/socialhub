@@ -10,6 +10,7 @@ module.exports = {
     facebook: null,
     facebookUsername: null,
     facebookName: null,
+    instagram: null
   },
   location: {
     address: null,
