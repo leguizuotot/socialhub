@@ -73,7 +73,7 @@ module.exports.setProgress = function(nombreAranya, newProgress, callback) {
       // request.query('UPDATE [ibc_seg].[DM_ARANYAS_STATUS] SET status=\'running\' WHERE NAME=\''+nombreAranya+'\'').then(function(data) {
 
       sql.close();
-      console.log('Progress updated to :' + newProgress);
+      // console.log('Progress updated to :' + newProgress);
       callback(null, data);
     })
   });

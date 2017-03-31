@@ -3,6 +3,8 @@ var router = express.Router();
 
 var ctrlAranyas = require('../controllers/index');
 
+
+router.get('/', ctrlAranyas.status);
 router.get('/status', ctrlAranyas.status);
 // router.get('/runaranya', function(req, res) {
 //   var nombreAranya = req.query.nombre;

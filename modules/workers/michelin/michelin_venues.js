@@ -84,7 +84,7 @@ database.connect(dbConfig)
         const number = streetAndNumber.match(/\d+/) ? streetAndNumber.match(/\d+/)[0] : null;
 
         return {
-          id: row.url.replace('http://www.viamichelin.es/web/Restaurantes/', ''),
+          id: row.url.replace('http://www.viamichelin.es/web/Restaurante/', ''),
           url: row.url,
           name: row.name,
           address: row.address,
