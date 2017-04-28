@@ -36,7 +36,7 @@ var dbConfig = require('../../../settings.js').dbConfigMsSQL
 database.connect(dbConfig)
 .then(() => database.query`
   SELECT [location.lat] AS [lat], [location.lng] AS [lng]
-  FROM [ibc_seg].[DM_SOURCE_FOURSQUARE_VENUES_RAW]
+  FROM [dbo].[DM_SOURCE_FOURSQUARE_VENUES_RAW]
   WHERE [location.lat] IS NOT NULL AND [location.lng] IS NOT NULL
   GROUP BY [location.lat], [location.lng]`
 )

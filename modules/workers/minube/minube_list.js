@@ -28,7 +28,7 @@ var dbConfig = require('../../../settings.js').dbConfigMsSQL
 database.connect(dbConfig)
 .then(() => database.query`
   SELECT *
-  FROM ibc_seg.DM_SOURCE_MINUBE_PAGES_RAW`)
+  FROM dbo.DM_SOURCE_MINUBE_PAGES_RAW`)
 .then((rows) => {
   const input = rows
     .map((item) => Object.assign({}, item, {

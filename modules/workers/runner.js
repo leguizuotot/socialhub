@@ -64,7 +64,7 @@ function makeGenerator({config,data,handlers}) {
   const {input,model,todo,done} = data;
   const {handleGet,handleResponse} = handlers;
 
-  const tableName = `ibc_seg.DM_SOURCE_${origin.toUpperCase()}_${list.toUpperCase()}_RAW`;
+  const tableName = `dbo.DM_SOURCE_${origin.toUpperCase()}_${list.toUpperCase()}_RAW`;
   const maxRetries = 3;
   let retries = 0;
   let message = 'Getting ' + origin + '-' + list;
@@ -173,7 +173,7 @@ function run({config,data,handlers}) {
 function runner({config,data,handlers}) {
   const {origin,list} = config;
   const {input,model} = data;
-  const tableName = `ibc_seg.DM_SOURCE_${origin.toUpperCase()}_${list.toUpperCase()}_RAW`;
+  const tableName = `dbo.DM_SOURCE_${origin.toUpperCase()}_${list.toUpperCase()}_RAW`;
 
   connection
 

@@ -27,8 +27,8 @@ var dbConfig = require('../../../settings.js').dbConfigMsSQL
 database.connect(dbConfig)
   .then(() => database.query `
 SELECT *
-FROM ibc_seg.DM_SOURCE_REPSOL_PAGES_RAW
-where [datetime] = (SELECT max([datetime])FROM ibc_seg.DM_SOURCE_REPSOL_PAGES_RAW)
+FROM dbo.DM_SOURCE_REPSOL_PAGES_RAW
+where [datetime] = (SELECT max([datetime])FROM dbo.DM_SOURCE_REPSOL_PAGES_RAW)
 ORDER BY CAST(cluster AS INT)`)
   .then((rows) => {
     const input = rows

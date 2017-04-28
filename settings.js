@@ -1,8 +1,8 @@
 
 exports.dbConfigMsSQL = {
-  user: 'sqlcsa',
-  password: 'Zaragoza1',
+  user: 'zSocialHub',
+  password: 'M1nsa1t39',
   server: '40.115.26.178',
-  database: 'mahounet',
+  database: 'zSocialHub',
   requestTimeout: 360000,
 };

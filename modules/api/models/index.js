@@ -21,13 +21,13 @@ var getTime = function() {
     ' (GMT +00)'
 }
 module.exports.status = function(req, callback) {
-  //console.log(executeQuery(res, 'select * from [ibc_seg].[DM_ARANYAS_STATUS]')[0])
+  //console.log(executeQuery(res, 'select * from [dbo].[DM_ARANYAS_STATUS]')[0])
   sql.connect(settings.dbConfigMsSQL, function(err) {
     if (err) console.log("Error while connecting database :- " + err);
     // create Request object
     var request = new sql.Request();
     // query to the database and get the records
-    request.query('select * from [ibc_seg].[DM_ARANYAS_STATUS]').then(function(data) {
+    request.query('select * from [dbo].[DM_ARANYAS_STATUS]').then(function(data) {
       sql.close();
       callback(null, data);
     })
@@ -35,13 +35,13 @@ module.exports.status = function(req, callback) {
 }
 
 module.exports.getStatus = function(nombreAranya, callback) {
-  //console.log(executeQuery(res, 'select * from [ibc_seg].[DM_ARANYAS_STATUS]')[0])
+  //console.log(executeQuery(res, 'select * from [dbo].[DM_ARANYAS_STATUS]')[0])
   sql.connect(settings.dbConfigMsSQL, function(err) {
     if (err) console.log("Error while connecting database :- " + err);
     // create Request object
     var request = new sql.Request();
     // query to the database and get the records
-    request.query('select STATUS from [ibc_seg].[DM_ARANYAS_STATUS] WHERE NAME=\'' + nombreAranya + '\'').then(function(data) {
+    request.query('select STATUS from [dbo].[DM_ARANYAS_STATUS] WHERE NAME=\'' + nombreAranya + '\'').then(function(data) {
       sql.close();
       callback(null, data);
     })
@@ -54,8 +54,8 @@ module.exports.setStatus = function(nombreAranya, newStatus, callback) {
     // create Request object
     var request = new sql.Request();
     // query to the database and get the records
-    request.query('UPDATE [ibc_seg].[DM_ARANYAS_STATUS] SET status=\'' + newStatus + '\', timestamp=\'' + getTime() + '\' WHERE NAME=\'' + nombreAranya + '\'').then(function(data) {
-      // request.query('UPDATE [ibc_seg].[DM_ARANYAS_STATUS] SET status=\'running\' WHERE NAME=\''+nombreAranya+'\'').then(function(data) {
+    request.query('UPDATE [dbo].[DM_ARANYAS_STATUS] SET status=\'' + newStatus + '\', timestamp=\'' + getTime() + '\' WHERE NAME=\'' + nombreAranya + '\'').then(function(data) {
+      // request.query('UPDATE [dbo].[DM_ARANYAS_STATUS] SET status=\'running\' WHERE NAME=\''+nombreAranya+'\'').then(function(data) {
 
       sql.close();
       callback(null, data);
@@ -69,8 +69,8 @@ module.exports.setProgress = function(nombreAranya, newProgress, callback) {
     // create Request object
     var request = new sql.Request();
     // query to the database and get the records
-    request.query('UPDATE [ibc_seg].[DM_ARANYAS_STATUS] SET progress=\'' + newProgress + '\', timestamp=\'' + getTime() + '\' WHERE NAME=\'' + nombreAranya + '\'').then(function(data) {
-      // request.query('UPDATE [ibc_seg].[DM_ARANYAS_STATUS] SET status=\'running\' WHERE NAME=\''+nombreAranya+'\'').then(function(data) {
+    request.query('UPDATE [dbo].[DM_ARANYAS_STATUS] SET progress=\'' + newProgress + '\', timestamp=\'' + getTime() + '\' WHERE NAME=\'' + nombreAranya + '\'').then(function(data) {
+      // request.query('UPDATE [dbo].[DM_ARANYAS_STATUS] SET status=\'running\' WHERE NAME=\''+nombreAranya+'\'').then(function(data) {
 
       sql.close();
       // console.log('Progress updated to :' + newProgress);

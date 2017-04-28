@@ -69,11 +69,11 @@ database.connect(dbConfig)
 .then(() => {
   const pFoursquare = database.query`
     SELECT DISTINCT [contact.twitter]
-    FROM [ibc_seg].[V_SOURCE_FOURSQUARE]
+    FROM [dbo].[V_SOURCE_FOURSQUARE]
     WHERE [contact.twitter] IS NOT NULL`;
   const pManpower = database.query`
     SELECT DISTINCT [idTwitter]
-    FROM [ibc_seg].[V_SOURCE_TWITTER_MANPOWER]
+    FROM [dbo].[V_SOURCE_TWITTER_MANPOWER]
     WHERE [idTwitter] <> ''`;
 
   return Promise.all([pFoursquare, pManpower]);
