@@ -26,6 +26,7 @@
     "node-fetch": "^1.6.3",
     "node-stringify": "0.0.19",
     "path": "^0.12.7",
+    "python-shell": "^0.4.0",
     "query": "^0.2.0",
     "twitter-node-client": "0.0.6",
     "x-ray": "^2.3.2",
