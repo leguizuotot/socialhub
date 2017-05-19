@@ -43,6 +43,22 @@ with open("input\\centroides_cod_postal.json") as json_file:
 centroides = pd.concat([centroides,pd.DataFrame(json_data)])
 
 
+centroides['index'] = centroides.index
+
+centroides['cluster'] = centroides[['index','latlon','type']].apply(lambda x: '|'.join(x.astype(str)).replace(" ", ""), axis=1)
+
+
+
+engine = sa.create_engine(
+    'mssql+pyodbc://zSocialHub:M1nsa1t39@tsp02.cloudapp.net/zSocialHub?driver=SQL+Server+Native+Client+11.0')
+clustersActualizados = pd.read_sql_query("SELECT cluster,max(datetime) last_update FROM [zSocialHub].[dbo].[DM_SOURCE_GOOGLE_RAW] GROUP BY cluster HAVING DATEDIFF(day,max(datetime),getdate())<7", engine)
+# print(clustersActualizados['last_update'])
+
+# centroides.clustercentroides
+
+centroidesRemaining = centroides[~centroides['cluster'].isin(clustersActualizados['cluster'])]
+
+
 # output_dict = [x for x in json_data if x['municipio'] == 'barcelona']
 # centroides_cod_censal_barcelona = list(map((lambda x: x['latlon']), output_dict))
 
@@ -79,8 +95,8 @@ def handleResponse(jsonData):
 
 
 def saveToSQL(dataframe):
-    engine = sa.create_engine(
-        'mssql+pyodbc://zSocialHub:M1nsa1t39@tsp02.cloudapp.net/zSocialHub?driver=SQL+Server+Native+Client+11.0')
+    # engine = sa.create_engine(
+    #     'mssql+pyodbc://zSocialHub:M1nsa1t39@tsp02.cloudapp.net/zSocialHub?driver=SQL+Server+Native+Client+11.0')
     dataframe.to_sql(name='DM_SOURCE_GOOGLE_RAW', con=engine,
                      if_exists='append', index=False)
 
@@ -89,7 +105,7 @@ def getGoogleResults(latlon, cluster, types, APIkey):
     jsonData = googleNearby(latlon, types, APIkey)
     df = handleResponse(jsonData)
     # saveToSQL(df)
-    print('Fetch results...' + latlon)
+    print(str(datetime.datetime.utcnow())+ ' Cluster '+ cluster +': Fetch results...')
     sys.stdout.flush()
     sleep(2)
     i = 0
@@ -99,26 +115,27 @@ def getGoogleResults(latlon, cluster, types, APIkey):
         dfAUX = handleResponse(jsonData)
         df = pd.concat([df,dfAUX])
         # saveToSQL(df)
-        print('Fetching next_page_token '+ str(i))
+        print(str(datetime.datetime.utcnow())+ ' Cluster '+ cluster +': Fetching next_page_token '+ str(i))
         sys.stdout.flush()
         sleep(2)
-    print('Saving to SQL ' + str(len(df)) +' POIs')
+    print(str(datetime.datetime.utcnow())+ ' Cluster '+ cluster +': Saving to SQL ' + str(len(df)) +' POIs')
     df['cluster'] = cluster
     saveToSQL(df)
 
 
 
 # latlon = '40.597181,0.443250'
-# types = 'bar|restaurant|cafe'
+types = 'bar|restaurant|cafe'
 # print(centroides_municipio)
 # centroides_cod_censal_reduced = centroides_cod_censal[0:4]
 
 # print(centroides)
-
-for index, centroide in centroides.iterrows():
+# print(str(datetime.datetime.utcnow())+ ' Cluster '+ ': Fetch results...' )
+for index, centroide in centroidesRemaining.iterrows():
     latlon = centroide['latlon'].replace(" ", "")
     cluster = str(index) + '|' + latlon + '|' +centroide['type']
-    print(cluster)
+    getGoogleResults(latlon, cluster, types, API_KEY)
+    sleep(2)
     # print(indexCentroide)
     # sleep(2)
 
