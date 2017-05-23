@@ -62,10 +62,14 @@ def saveToSQL(dataframe):
 url_list = 'https://www.tripadvisor.es/Restaurants-g187427-Spain.html#LOCATION_LIST'
 url_list_base_ini = 'https://www.tripadvisor.es/Restaurants-g187427-oa'
 url_list_base_fin = '-Spain.html#LOCATION_LIST'
+print('importando')
 df = getCitiesURL(url_list,'.geo_name a')
+print('Guardando')
 saveToSQL(df)
 
 for i in range(1, 5):
     url = url_list_base_ini + str(i*20) + url_list_base_fin
+    print('importando' + url)
     df = getCitiesURL(url,'.geoList a')
+    print('Guardando')
     saveToSQL(df)
