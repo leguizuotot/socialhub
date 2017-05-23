@@ -49,7 +49,7 @@ def getCitiesURL(url,selector):
 
 def saveToSQL(dataframe):
     engine = sa.create_engine(
-         'mssql+pyodbc://zSocialHub:M1nsa1t39@tsp02.cloudapp.net/zSocialHub?driver=SQL+Server+Native+Client+11.0')
+         'mssql+pyodbc://zSocialHub:M1nsa1t39@tsp02.cloudapp.net/zSocialHub?driver=SQL+Server+Native+Client+13.0')
     try:
         dataframe.to_sql(name='DM_SOURCE_TRIPADVISOR_PAGES_RAW_PYTHON', con=engine,
                      if_exists='append', index=False)
