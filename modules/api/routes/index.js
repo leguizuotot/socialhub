@@ -15,8 +15,8 @@ router.get('/status', ctrlAranyas.status);
 //   res.end();
 // });
 router.get('/runAranya', ctrlAranyas.runAranya);
-router.get('/google',function(req, res) {
-  res.send(__dirname);
+router.get('/googledyhsturtuerueriutyutyuoui',function(req, res) {
+  // res.send(__dirname);
   // var spawn = require("child_process").spawn;
   // var process = spawn('python',["pythonScript.py"]);
 
@@ -36,7 +36,33 @@ router.get('/google',function(req, res) {
       if (err){
           throw err;
       }
+      console.log('finished');
+  });
 
+});
+
+
+router.get('/pythontripadvisor',function(req, res) {
+  res.send(__dirname);
+  // var spawn = require("child_process").spawn;
+  // var process = spawn('python',["pythonScript.py"]);
+
+  var myPythonScriptPath = __dirname+'/../../workers/tripadvisor/tripadvisor_list.py';
+  // console.log(__dirname);
+
+  // Use python shell
+  var PythonShell = require('python-shell');
+  var pyshell = new PythonShell(myPythonScriptPath);
+  pyshell.on('message', function (message) {
+      // received a message sent from the Python script (a simple "print" statement)
+      console.log(message);
+  });
+
+  // end the input stream and allow the process to exit
+  pyshell.end(function (err) {
+      if (err){
+          throw err;
+      }
       console.log('finished');
   });
 

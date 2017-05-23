@@ -30,6 +30,9 @@ from time import sleep
 dir_path = os.path.dirname(os.path.realpath(__file__))
 os.chdir(dir_path)
 
+print('Importing centroids...', flush=True)
+
+
 with open("input\\centroides_municipio.json") as json_file:
     json_data = json.load(json_file)
 centroides = pd.DataFrame(json_data)
@@ -41,17 +44,26 @@ centroides = pd.concat([centroides,pd.DataFrame(json_data)])
 with open("input\\centroides_cod_postal.json") as json_file:
     json_data = json.load(json_file)
 centroides = pd.concat([centroides,pd.DataFrame(json_data)])
-
-
+sleep(10)
 centroides['index'] = centroides.index
-
 centroides['cluster'] = centroides[['index','latlon','type']].apply(lambda x: '|'.join(x.astype(str)).replace(" ", ""), axis=1)
 
 
+print('Done!', flush=True)
+# sys.stdout.flush()
 
-engine = sa.create_engine(
-    'mssql+pyodbc://zSocialHub:M1nsa1t39@tsp02.cloudapp.net/zSocialHub?driver=SQL+Server+Native+Client+11.0')
-clustersActualizados = pd.read_sql_query("SELECT cluster,max(datetime) last_update FROM [zSocialHub].[dbo].[DM_SOURCE_GOOGLE_RAW] GROUP BY cluster HAVING DATEDIFF(day,max(datetime),getdate())<7", engine)
+
+print('Connecting DB...')
+sys.stdout.flush()
+
+try:
+    engine = sa.create_engine(
+        'mssql+pyodbc://zSocialHub:M1nsa1t39@tsp02.cloudapp.net/zSocialHub?driver=SQL+Server+Native+Client+11.0')
+    clustersActualizados = pd.read_sql_query("SELECT cluster,max(datetime) last_update FROM [zSocialHub].[dbo].[DM_SOURCE_GOOGLE_RAW] GROUP BY cluster HAVING DATEDIFF(day,max(datetime),getdate())<7", engine)
+    print('Connected!!', flush=True)
+except sa.exc.DBAPIError:
+    sys.exit("Error (DBAPIError)")
+
 # print(clustersActualizados['last_update'])
 
 # centroides.clustercentroides
@@ -75,7 +87,13 @@ def googleNearby(latlon, types, APIkey):
 def googleNextPageToken(next_page_token, APIkey):
     url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?pagetoken=' + \
         next_page_token + '&key=' + APIkey
-    response = urllib.request.urlopen(url)
+
+
+    try:
+        response = urllib.request.urlopen(url)
+    except TimeoutError:
+        print('TimeoutError')
+
     jsonRaw = response.read().decode('utf-8')
     return json.loads(jsonRaw)
 
@@ -90,6 +108,10 @@ def handleResponse(jsonData):
     df['lat'] = np.asarray(lat)
     df['lng'] = np.asarray(lng)
     df['datetime'] = datetime.datetime.utcnow()
+    if 'rating' in df.columns:
+        df['rating'] = df['rating']
+    else:
+        df['rating'] = None
     df = df[cols]
     return df
 
@@ -97,31 +119,38 @@ def handleResponse(jsonData):
 def saveToSQL(dataframe):
     # engine = sa.create_engine(
     #     'mssql+pyodbc://zSocialHub:M1nsa1t39@tsp02.cloudapp.net/zSocialHub?driver=SQL+Server+Native+Client+11.0')
-    dataframe.to_sql(name='DM_SOURCE_GOOGLE_RAW', con=engine,
+    try:
+        dataframe.to_sql(name='DM_SOURCE_GOOGLE_RAW', con=engine,
                      if_exists='append', index=False)
+    except sqlalchemy.exc.DBAPIError:
+        print('Save Error!!!')
 
 
 def getGoogleResults(latlon, cluster, types, APIkey):
-    jsonData = googleNearby(latlon, types, APIkey)
-    df = handleResponse(jsonData)
-    # saveToSQL(df)
     print(str(datetime.datetime.utcnow())+ ' Cluster '+ cluster +': Fetch results...')
     sys.stdout.flush()
-    sleep(2)
-    i = 0
-    while 'next_page_token' in jsonData:
-        i = i +1
-        jsonData = googleNextPageToken(jsonData['next_page_token'], APIkey)
-        dfAUX = handleResponse(jsonData)
-        df = pd.concat([df,dfAUX])
+    jsonData = googleNearby(latlon, types, APIkey)
+    status = jsonData['status']
+    if(status=='OK'):
+        df = handleResponse(jsonData)
         # saveToSQL(df)
-        print(str(datetime.datetime.utcnow())+ ' Cluster '+ cluster +': Fetching next_page_token '+ str(i))
-        sys.stdout.flush()
-        sleep(2)
-    print(str(datetime.datetime.utcnow())+ ' Cluster '+ cluster +': Saving to SQL ' + str(len(df)) +' POIs')
-    df['cluster'] = cluster
-    saveToSQL(df)
 
+        sleep(2)
+        i = 0
+        while 'next_page_token' in jsonData:
+            i = i +1
+            jsonData = googleNextPageToken(jsonData['next_page_token'], APIkey)
+            dfAUX = handleResponse(jsonData)
+            df = pd.concat([df,dfAUX])
+            # saveToSQL(df)
+            print(str(datetime.datetime.utcnow())+ ' Cluster '+ cluster +': Fetching next_page_token '+ str(i))
+            sys.stdout.flush()
+            sleep(2)
+        print(str(datetime.datetime.utcnow())+ ' Cluster '+ cluster +': Saving SQL ' + str(len(df)) +' POIs')
+        df['cluster'] = cluster
+        saveToSQL(df)
+    else:
+        print(str(datetime.datetime.utcnow())+ ' Cluster '+ cluster +': 0 results saved(Status response' + status +')')
 
 
 # latlon = '40.597181,0.443250'
